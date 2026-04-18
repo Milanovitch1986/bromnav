@@ -2,110 +2,132 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BromNav — Bromscooter Navigatie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BromNav</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- ✅ VUL HIER JOUW API-SLEUTEL IN (vervang JOUW_SLEUTEL_HIER) -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjjKqVRsjAGIDZ4GJvjohtmwMkA3M6U0s&libraries=places,geometry&callback=initMap" async defer></script>
 
 <style>
-:root {
+:root{
   --bg:#0d0f12;--surface:#161a20;--surface2:#1e2530;--border:#2a3040;
   --orange:#ff6a00;--yellow:#ffc300;--green:#00c896;--red:#ff3b3b;--blue:#4a9eff;
   --text:#e8ecf0;--text-dim:#7a8899;--text-muted:#4a5568;--radius:12px;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);}
 
-/* HEADER */
-header{background:var(--surface);border-bottom:2px solid var(--orange);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;z-index:100;flex-shrink:0;}
+/* PLANSCHERM */
+#planScherm{height:100%;display:flex;flex-direction:column;}
+header{background:var(--surface);border-bottom:2px solid var(--orange);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;letter-spacing:1px;color:var(--orange);}
 .logo span{color:var(--text);}
-.header-right{display:flex;gap:8px;align-items:center;}
-.speed-badge{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text-dim);}
-.speed-badge strong{color:var(--orange);font-size:16px;}
-.btn-rules{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;}
-.btn-rules:hover{border-color:var(--orange);color:var(--orange);}
+.btn-sm{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;}
+.btn-sm:hover{border-color:var(--orange);color:var(--orange);}
 
-/* LAYOUT */
-.app{flex:1;display:grid;grid-template-columns:320px 1fr;grid-template-rows:1fr auto;overflow:hidden;}
-
-/* SIDEBAR */
-.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.plan-body{flex:1;display:grid;grid-template-columns:320px 1fr;overflow:hidden;}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
 .search-section{padding:14px;border-bottom:1px solid var(--border);}
-.section-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
+.lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
 .input-group{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
 .input-row{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;transition:border-color .2s;}
 .input-row:focus-within{border-color:var(--orange);}
-.input-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.dot-start{background:var(--green);}.dot-end{background:var(--orange);}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-s{background:var(--green);}.dot-e{background:var(--orange);}
 .input-row input{background:none;border:none;outline:none;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;flex:1;min-width:0;}
 .input-row input::placeholder{color:var(--text-muted);}
-.btn-primary{width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius);padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s,transform .1s;}
-.btn-primary:hover{background:#e05a00;}.btn-primary:active{transform:scale(0.98);}
-.btn-primary:disabled{background:#555;cursor:not-allowed;}
+.btn-primary{width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius);padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s;}
+.btn-primary:hover{background:#e05a00;}.btn-primary:disabled{background:#444;cursor:not-allowed;}
 
-/* REGELS PILLS */
-.rules-section{padding:12px 14px;border-bottom:1px solid var(--border);}
-.rule-pills{display:flex;flex-wrap:wrap;gap:5px;}
-.pill{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid;}
-.pill-green{background:rgba(0,200,150,.1);border-color:rgba(0,200,150,.3);color:var(--green);}
-.pill-red{background:rgba(255,59,59,.1);border-color:rgba(255,59,59,.3);color:var(--red);}
-.pill-yellow{background:rgba(255,195,0,.1);border-color:rgba(255,195,0,.3);color:var(--yellow);}
-.pill-blue{background:rgba(74,158,255,.1);border-color:rgba(74,158,255,.3);color:var(--blue);}
+.pills-section{padding:12px 14px;border-bottom:1px solid var(--border);}
+.pills{display:flex;flex-wrap:wrap;gap:5px;}
+.pill{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid;}
+.pg{background:rgba(0,200,150,.1);border-color:rgba(0,200,150,.3);color:var(--green);}
+.pr{background:rgba(255,59,59,.1);border-color:rgba(255,59,59,.3);color:var(--red);}
+.py{background:rgba(255,195,0,.1);border-color:rgba(255,195,0,.3);color:var(--yellow);}
+.pb{background:rgba(74,158,255,.1);border-color:rgba(74,158,255,.3);color:var(--blue);}
 
-/* ROUTE DETAILS */
-.route-section{padding:12px 14px;flex:1;overflow-y:auto;}
+.route-section{padding:12px 14px;flex:1;}
 .route-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px;}
 .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px;text-align:center;}
-.stat-value{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--orange);}
-.stat-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--orange);}
+.stat-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-top:1px;}
 .steps-list{display:flex;flex-direction:column;}
 .step{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);animation:slideIn .3s ease both;}
+.step.active-step{background:rgba(255,106,0,.08);border-radius:8px;padding:9px 8px;border-bottom:1px solid var(--orange);}
 .step:last-child{border-bottom:none;}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
 .step-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);}
+.step-icon.active{background:var(--orange);border-color:var(--orange);}
 .step-content{flex:1;min-width:0;}
-.step-instruction{font-size:12px;font-weight:500;color:var(--text);}
-.step-detail{font-size:11px;color:var(--text-dim);margin-top:1px;}
-.step-warning{font-size:11px;color:var(--yellow);margin-top:2px;}
+.step-instr{font-size:12px;font-weight:500;color:var(--text);}
+.step-warn{font-size:11px;color:var(--yellow);margin-top:2px;}
 .step-dist{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text-muted);white-space:nowrap;padding-top:2px;}
+.wegtype-badge{display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(0,0,0,.3);}
 .empty-msg{color:var(--text-muted);font-size:13px;padding:8px 0;}
 
-/* MAP */
-.map-area{position:relative;overflow:hidden;}
-#map{width:100%;height:100%;}
-
-/* MAP OVERLAYS */
-.speed-limit{position:absolute;top:12px;left:12px;background:white;border:4px solid var(--red);border-radius:50%;width:56px;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#111;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.5);z-index:10;pointer-events:none;}
+.map-preview{position:relative;}
+#mapPreview{width:100%;height:100%;}
+.speed-limit{position:absolute;top:12px;left:12px;background:white;border:4px solid var(--red);border-radius:50%;width:54px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#111;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.5);z-index:10;pointer-events:none;}
 .speed-limit small{font-size:8px;font-weight:600;}
+.locate-btn{position:absolute;top:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:10;transition:all .2s;}
+.locate-btn:hover{border-color:var(--orange);}
 
-.road-type-box{position:absolute;bottom:70px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:7px 11px;font-size:11px;color:var(--text-dim);text-align:center;z-index:10;display:none;}
-.road-type-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--green);}
+/* NAVIGATIESCHERM */
+#navScherm{height:100%;display:flex;flex-direction:column;display:none;}
 
-.alert-banner{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--yellow);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:13px;min-width:260px;max-width:380px;box-shadow:0 4px 20px rgba(0,0,0,.5);animation:fadeUp .3s ease;z-index:20;}
+/* Bovenste instructiebalk */
+.nav-top{background:var(--surface);border-bottom:2px solid var(--orange);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.nav-turn-icon{width:56px;height:56px;background:var(--orange);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.nav-top-text{flex:1;}
+.nav-top-instr{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1.1;}
+.nav-top-detail{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.nav-top-dist{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--orange);text-align:right;line-height:1;}
+.nav-top-dist small{display:block;font-size:11px;color:var(--text-muted);font-weight:400;}
+
+/* Kaart */
+#mapNav{flex:1;width:100%;}
+
+/* Onderste balk */
+.nav-bottom{background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.nav-bottom-left{display:flex;flex-direction:column;}
+.nav-eta-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.nav-eta-time{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--orange);line-height:1;}
+.nav-km-left{font-size:12px;color:var(--text-dim);}
+.nav-bottom-right{display:flex;gap:8px;}
+.nav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;}
+.nav-btn:hover{border-color:var(--orange);color:var(--orange);}
+.nav-btn.danger{border-color:rgba(255,59,59,.4);color:var(--red);}
+.nav-btn.danger:hover{background:rgba(255,59,59,.1);}
+
+/* Geluidknop */
+.sound-btn{position:fixed;bottom:70px;right:16px;background:var(--surface);border:2px solid var(--border);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:50;transition:all .2s;}
+.sound-btn.muted{border-color:var(--red);opacity:.6;}
+
+/* Snelheidsindicator tijdens nav */
+.nav-speed{position:absolute;top:12px;left:12px;background:white;border:4px solid var(--red);border-radius:50%;width:60px;height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#111;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;line-height:1;box-shadow:0 2px 12px rgba(0,0,0,.5);z-index:10;pointer-events:none;}
+.nav-speed small{font-size:8px;font-weight:600;}
+
+/* Volgende stap preview */
+.next-step-box{position:absolute;top:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;max-width:180px;z-index:10;font-size:12px;}
+.next-step-box .ns-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.next-step-box .ns-icon{font-size:18px;margin-right:4px;}
+.next-step-box .ns-text{color:var(--text);}
+
+/* Alert */
+.alert-banner{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--yellow);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:13px;min-width:260px;max-width:90vw;box-shadow:0 4px 20px rgba(0,0,0,.5);z-index:100;animation:fadeUp .3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .alert-icon{font-size:18px;flex-shrink:0;}
 .alert-text{flex:1;}
 .alert-text strong{color:var(--yellow);display:block;font-size:13px;}
 .alert-text span{font-size:12px;color:var(--text-dim);}
-.alert-close{background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;padding:0 4px;}
+.alert-close{background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;}
 
-.locate-btn{position:absolute;top:12px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:10;transition:all .2s;}
-.locate-btn:hover{border-color:var(--orange);}
-
-/* BOTTOM NAV BAR */
-.nav-bar{grid-column:1/-1;background:var(--surface);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.nav-instruction{display:flex;align-items:center;gap:10px;}
-.turn-icon{width:44px;height:44px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.nav-text strong{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;display:block;}
-.nav-text span{font-size:11px;color:var(--text-dim);}
-.nav-eta{text-align:right;}
-.eta-time{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:var(--orange);line-height:1;}
-.eta-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
-
-/* MODAL */
+/* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;max-width:420px;width:90%;max-height:85vh;overflow-y:auto;}
 .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:900;color:var(--orange);margin-bottom:14px;}
@@ -115,424 +137,683 @@ header{background:var(--surface);border-bottom:2px solid var(--orange);padding:1
 .rule-text strong{display:block;font-size:13px;margin-bottom:2px;}
 .rule-text p{font-size:11px;color:var(--text-dim);line-height:1.5;}
 .btn-close{width:100%;margin-top:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:15px;cursor:pointer;}
-.btn-close:hover{background:var(--border);}
 
 .hidden{display:none!important;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
 @media(max-width:650px){
-  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;}
-  .sidebar{max-height:260px;border-right:none;border-bottom:1px solid var(--border);}
-  .map-area{min-height:250px;}
+  .plan-body{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .sidebar{max-height:55vh;}
+  .map-preview{min-height:200px;}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">BROM<span>NAV</span></div>
-  <div class="header-right">
-    <button class="btn-rules" onclick="showRules()">📋 Regels</button>
-    <div class="speed-badge">Max <strong>45</strong> km/h</div>
-  </div>
-</header>
+<!-- ═══════════════════════════════════════════
+     PLANSCHERM
+═══════════════════════════════════════════ -->
+<div id="planScherm">
+  <header>
+    <div class="logo">BROM<span>NAV</span></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-sm" onclick="showRules()">📋 Regels</button>
+      <div class="btn-sm" style="cursor:default;">Max <strong style="color:var(--orange);">45</strong> km/h</div>
+    </div>
+  </header>
 
-<div class="app">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="search-section">
-      <div class="section-label">Route plannen</div>
-      <div class="input-group">
-        <div class="input-row">
-          <div class="input-dot dot-start"></div>
-          <input type="text" id="inputStart" placeholder="Vertrekpunt..." autocomplete="off">
+  <div class="plan-body">
+    <aside class="sidebar">
+      <div class="search-section">
+        <div class="lbl">Route plannen</div>
+        <div class="input-group">
+          <div class="input-row">
+            <div class="dot dot-s"></div>
+            <input type="text" id="inputStart" placeholder="Vertrekpunt..." autocomplete="off">
+            <button onclick="gebruikMijnLocatie()" title="Gebruik mijn huidige locatie" style="background:none;border:none;cursor:pointer;font-size:18px;padding:0 2px;line-height:1;color:var(--green);flex-shrink:0;" id="locBtn">📍</button>
+          </div>
+          <div class="input-row">
+            <div class="dot dot-e"></div>
+            <input type="text" id="inputEnd" placeholder="Bestemming..." autocomplete="off">
+          </div>
         </div>
-        <div class="input-row">
-          <div class="input-dot dot-end"></div>
-          <input type="text" id="inputEnd" placeholder="Bestemming..." autocomplete="off">
+        <button class="btn-primary" id="btnRoute" onclick="planRoute()">🛵 Route berekenen</button>
+      </div>
+
+      <div class="pills-section">
+        <div class="lbl">Bromscooter regels NL</div>
+        <div class="pills">
+          <div class="pill pg">✅ Fietspad</div>
+          <div class="pill pr">🚫 Snelweg</div>
+          <div class="pill py">⚠️ 45 km/h max</div>
+          <div class="pill pb">🪖 Helm verplicht</div>
+          <div class="pill py">⚠️ Rijbewijs AM</div>
+          <div class="pill pg">✅ Rijbaan (geel)</div>
+          <div class="pill pr">🚫 Autosnelweg</div>
+          <div class="pill pr">🚫 Voetpad</div>
         </div>
       </div>
-      <button class="btn-primary" id="btnRoute" onclick="planRoute()">🛵 Route berekenen</button>
-    </div>
 
-    <div class="rules-section">
-      <div class="section-label">Bromscooter regels NL</div>
-      <div class="rule-pills">
-        <div class="pill pill-green">✅ Fietspad</div>
-        <div class="pill pill-red">🚫 Snelweg</div>
-        <div class="pill pill-yellow">⚠️ 45 km/h max</div>
-        <div class="pill pill-blue">🪖 Helm verplicht</div>
-        <div class="pill pill-yellow">⚠️ Rijbewijs AM</div>
-        <div class="pill pill-green">✅ Rijbaan (geel)</div>
-        <div class="pill pill-red">🚫 Autosnelweg</div>
-        <div class="pill pill-red">🚫 Voetpad</div>
+      <div class="route-section">
+        <div class="lbl">Routedetails</div>
+        <div class="route-stats hidden" id="routeStats">
+          <div class="stat-card"><div class="stat-val" id="statDist">—</div><div class="stat-lbl">km</div></div>
+          <div class="stat-card"><div class="stat-val" id="statTime">—</div><div class="stat-lbl">min</div></div>
+          <div class="stat-card"><div class="stat-val">45</div><div class="stat-lbl">km/h max</div></div>
+        </div>
+        <div class="steps-list" id="stepsList">
+          <div class="empty-msg">Voer een vertrekpunt en bestemming in.</div>
+        </div>
+        <button class="btn-primary hidden" id="btnStartNav" onclick="startNavigatie()" style="margin-top:12px;background:var(--green);font-size:16px;">
+          🧭 Start navigatie
+        </button>
       </div>
-    </div>
+    </aside>
 
-    <div class="route-section">
-      <div class="section-label">Routedetails</div>
-      <div class="route-stats hidden" id="routeStats">
-        <div class="stat-card"><div class="stat-value" id="statDist">—</div><div class="stat-label">km</div></div>
-        <div class="stat-card"><div class="stat-value" id="statTime">—</div><div class="stat-label">min</div></div>
-        <div class="stat-card"><div class="stat-value">45</div><div class="stat-label">km/h max</div></div>
-      </div>
-      <div class="steps-list" id="stepsList">
-        <div class="empty-msg">Voer een vertrekpunt en bestemming in om een route te berekenen.</div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- KAART -->
-  <main class="map-area">
-    <div id="map"></div>
-
-    <div class="speed-limit"><span id="speedNum">45</span><small>km/h</small></div>
-
-    <div class="road-type-box" id="roadTypeBox">
-      <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Wegtype</div>
-      <div class="road-type-name" id="roadTypeName">Fietspad</div>
-      <div style="font-size:10px;" id="roadTypeRule">✅ Toegestaan</div>
-    </div>
-
-    <div class="locate-btn" onclick="locateMe()" title="Mijn locatie">📍</div>
-
-    <div class="alert-banner hidden" id="alertBanner">
-      <div class="alert-icon" id="alertIcon">⚠️</div>
-      <div class="alert-text">
-        <strong id="alertTitle">Let op!</strong>
-        <span id="alertMsg">Bericht</span>
-      </div>
-      <button class="alert-close" onclick="closeAlert()">×</button>
-    </div>
-  </main>
-
-  <!-- ONDERSTE BALK -->
-  <div class="nav-bar">
-    <div class="nav-instruction">
-      <div class="turn-icon" id="turnIcon">🛵</div>
-      <div class="nav-text">
-        <strong id="navInstruction">Klaar om te navigeren</strong>
-        <span id="navDetail">Voer een bestemming in</span>
-      </div>
-    </div>
-    <div class="nav-eta">
-      <div class="eta-time" id="etaTime">—:—</div>
-      <div class="eta-label">aankomsttijd</div>
+    <div class="map-preview">
+      <div id="mapPreview" style="width:100%;height:100%;"></div>
+      <div class="speed-limit"><span>45</span><small>km/h</small></div>
+      <div class="locate-btn" onclick="locateMe()">📍</div>
     </div>
   </div>
 </div>
 
-<!-- MODAL REGELS -->
+<!-- ═══════════════════════════════════════════
+     NAVIGATIESCHERM
+═══════════════════════════════════════════ -->
+<div id="navScherm">
+  <!-- Bovenste instructiebalk -->
+  <div class="nav-top">
+    <div class="nav-turn-icon" id="navTurnIcon">⬆️</div>
+    <div class="nav-top-text">
+      <div class="nav-top-instr" id="navTopInstr">Navigatie starten...</div>
+      <div class="nav-top-detail" id="navTopDetail">GPS wordt geladen</div>
+    </div>
+    <div>
+      <div class="nav-top-dist" id="navTopDist">—<small>meter</small></div>
+    </div>
+  </div>
+
+  <!-- Kaart -->
+  <div style="flex:1;position:relative;">
+    <div id="mapNav" style="width:100%;height:100%;"></div>
+    <div class="nav-speed"><span id="navSpeedNum">45</span><small>km/h</small></div>
+    <div class="next-step-box hidden" id="nextStepBox">
+      <div class="ns-label">Daarna</div>
+      <div><span class="ns-icon" id="nsIcon">⬆️</span><span class="ns-text" id="nsText">Rechtdoor</span></div>
+    </div>
+  </div>
+
+  <!-- Onderste balk -->
+  <div class="nav-bottom">
+    <div class="nav-bottom-left">
+      <div class="nav-eta-label">aankomsttijd</div>
+      <div class="nav-eta-time" id="navEtaTime">—:—</div>
+      <div class="nav-km-left" id="navKmLeft">— km resterend</div>
+    </div>
+    <div class="nav-bottom-right">
+      <button class="nav-btn" onclick="toggleMute()" id="muteBtn">🔊 Geluid</button>
+      <button class="nav-btn danger" onclick="stopNavigatie()">✕ Stop</button>
+    </div>
+  </div>
+</div>
+
+<!-- Geluidknop -->
+<button class="sound-btn hidden" id="soundBtn" onclick="toggleMute()">🔊</button>
+
+<!-- Alert banner -->
+<div class="alert-banner hidden" id="alertBanner">
+  <div class="alert-icon" id="alertIcon">⚠️</div>
+  <div class="alert-text">
+    <strong id="alertTitle">Let op!</strong>
+    <span id="alertMsg">Bericht</span>
+  </div>
+  <button class="alert-close" onclick="closeAlert()">×</button>
+</div>
+
+<!-- Modal regels -->
 <div class="modal-bg hidden" id="rulesModal">
   <div class="modal">
     <h2>🛵 Verkeersregels Bromscooter NL</h2>
-    <div class="rule-item"><div class="rule-emoji">🚦</div><div class="rule-text"><strong>Maximumsnelheid: 45 km/h</strong><p>Op alle openbare wegen geldt maximaal 45 km/h voor een bromfiets. Pas je snelheid aan op fietspaden (ca. 30 km/h in de praktijk).</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🚲</div><div class="rule-text"><strong>Fietspad vs. rijbaan</strong><p>Snorfiets (blauwe plaat, max 25 km/h) → fietspad verplicht. Bromfiets (gele plaat, max 45 km/h) → rijbaan buiten bebouwde kom, fietspad binnen bebouwde kom.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🪖</div><div class="rule-text"><strong>Helm verplicht</strong><p>Goedgekeurde brommerhelm voor bestuurder én passagier. Boete bij geen helm: €160+.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🛣️</div><div class="rule-text"><strong>Snelweg verboden</strong><p>Autowegen (A-wegen) en autosnelwegen zijn verboden voor bromscooters. De app gebruikt altijd fietspad- en rijbaan-routes.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🪪</div><div class="rule-text"><strong>Rijbewijs AM of B</strong><p>Rijbewijs AM vereist. Rijbewijs B of A volstaat ook. Minimumleeftijd: 16 jaar.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">📱</div><div class="rule-text"><strong>Geen handheld telefoon</strong><p>Telefoon vasthouden tijdens het rijden is verboden. Gebruik een stuurmount voor navigatie. Boete: €420.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🍺</div><div class="rule-text"><strong>Alcohol & drugs</strong><p>Max 0,5 promille (0,2 voor rijbewijshouders jonger dan 2 jaar). Drugs rijden altijd verboden.</p></div></div>
-    <div class="rule-item"><div class="rule-emoji">🌙</div><div class="rule-text"><strong>Verlichting verplicht</strong><p>Voor- en achterlicht bij duisternis of slecht zicht. Retroreflectoren verplicht aan achterkant.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🚦</div><div class="rule-text"><strong>Maximumsnelheid: 45 km/h</strong><p>Op alle openbare wegen maximaal 45 km/h. Pas snelheid aan op fietspaden.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🚲</div><div class="rule-text"><strong>Fietspad vs. rijbaan</strong><p>Snorfiets (blauwe plaat) → fietspad verplicht. Bromfiets (gele plaat) → rijbaan buiten bebouwde kom.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🪖</div><div class="rule-text"><strong>Helm verplicht</strong><p>Goedgekeurde helm voor bestuurder én passagier. Boete: €160+.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🛣️</div><div class="rule-text"><strong>Snelweg verboden</strong><p>A-wegen en autosnelwegen zijn verboden voor bromscooters.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🪪</div><div class="rule-text"><strong>Rijbewijs AM of B</strong><p>Rijbewijs AM vereist. Minimumleeftijd: 16 jaar.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">📱</div><div class="rule-text"><strong>Geen handheld telefoon</strong><p>Gebruik een stuurmount voor navigatie. Boete: €420.</p></div></div>
+    <div class="rule-item"><div class="rule-emoji">🍺</div><div class="rule-text"><strong>Alcohol & drugs</strong><p>Max 0,5 promille. Drugs rijden altijd verboden.</p></div></div>
     <button class="btn-close" onclick="closeRules()">Sluiten</button>
   </div>
 </div>
 
 <script>
-// ── GLOBALE VARIABELEN ──
-let map, directionsService, directionsRenderer;
-let autocompleteStart, autocompleteEnd;
-let userMarker = null;
+// ════════════════════════════════════════════
+// GLOBALE STAAT
+// ════════════════════════════════════════════
+let mapPlan, mapNav;
+let directionsService, directionsRenderer, directionsRendererNav;
+let autoStart, autoEnd;
+let routeStappen = [];
+let huidigeStap = 0;
+let gpsWatcher = null;
+let userMarkerPlan = null;
+let userMarkerNav = null;
+let geluidsAan = true;
+let wakeLock = null;
+let routeResultaat = null;
+let navEtaMinuten = 0;
+let totaleAfstand = 0;
+let afgelegdeAfstand = 0;
+let vorigePos = null;
 
-// ── GOOGLE MAPS INITIALISATIE ──
+// ════════════════════════════════════════════
+// GOOGLE MAPS INIT
+// ════════════════════════════════════════════
 function initMap() {
-  // Kaart centreren op Nederland
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 52.3676, lng: 4.9041 }, // Amsterdam als standaard
-    zoom: 13,
-    mapTypeId: 'roadmap',
-    styles: [
-      { elementType: 'geometry', stylers: [{ color: '#1e2530' }] },
-      { elementType: 'labels.text.fill', stylers: [{ color: '#7a8899' }] },
-      { elementType: 'labels.text.stroke', stylers: [{ color: '#0d0f12' }] },
-      { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a3040' }] },
-      { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3a4555' }] },
-      { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca5b3' }] },
-      { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0d1b2a' }] },
-      { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4a6fa5' }] },
-      { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#1a2030' }] },
-      { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#152018' }] },
-      { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#2f3948' }] },
-      { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#4b6a88' }] },
-      { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#12181f' }] },
-    ],
-    disableDefaultUI: true,
-    zoomControl: true,
-    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER }
+  const darkStijl = [
+    {elementType:'geometry',stylers:[{color:'#1e2530'}]},
+    {elementType:'labels.text.fill',stylers:[{color:'#7a8899'}]},
+    {elementType:'labels.text.stroke',stylers:[{color:'#0d0f12'}]},
+    {featureType:'road',elementType:'geometry',stylers:[{color:'#2a3040'}]},
+    {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#3a4555'}]},
+    {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#9ca5b3'}]},
+    {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1b2a'}]},
+    {featureType:'poi',elementType:'geometry',stylers:[{color:'#1a2030'}]},
+    {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#152018'}]},
+    {featureType:'landscape',elementType:'geometry',stylers:[{color:'#12181f'}]},
+    {featureType:'transit',elementType:'geometry',stylers:[{color:'#2f3948'}]},
+  ];
+
+  // Plankaart
+  mapPlan = new google.maps.Map(document.getElementById('mapPreview'), {
+    center:{lat:52.37,lng:4.90}, zoom:13,
+    styles:darkStijl, disableDefaultUI:true,
+    zoomControl:true, zoomControlOptions:{position:google.maps.ControlPosition.RIGHT_CENTER}
   });
 
-  // Directions service & renderer
+  // Navigatiekaart
+  mapNav = new google.maps.Map(document.getElementById('mapNav'), {
+    center:{lat:52.37,lng:4.90}, zoom:17,
+    styles:darkStijl, disableDefaultUI:true,
+    tilt:0, heading:0
+  });
+
   directionsService = new google.maps.DirectionsService();
+
   directionsRenderer = new google.maps.DirectionsRenderer({
-    map: map,
-    suppressMarkers: false,
-    polylineOptions: {
-      strokeColor: '#ff6a00',
-      strokeWeight: 5,
-      strokeOpacity: 0.9
-    }
+    map:mapPlan, suppressMarkers:false,
+    polylineOptions:{strokeColor:'#ff6a00',strokeWeight:5,strokeOpacity:.9}
   });
 
-  // Autocomplete voor zoekvelden (beperkt tot Nederland)
+  directionsRendererNav = new google.maps.DirectionsRenderer({
+    map:mapNav, suppressMarkers:false,
+    polylineOptions:{strokeColor:'#ff6a00',strokeWeight:6,strokeOpacity:.95}
+  });
+
+  // Autocomplete NL
   const nlBounds = new google.maps.LatLngBounds(
-    new google.maps.LatLng(50.75, 3.36),
-    new google.maps.LatLng(53.56, 7.23)
+    new google.maps.LatLng(50.75,3.36),
+    new google.maps.LatLng(53.56,7.23)
   );
-
-  autocompleteStart = new google.maps.places.Autocomplete(
+  autoStart = new google.maps.places.Autocomplete(
     document.getElementById('inputStart'),
-    { bounds: nlBounds, componentRestrictions: { country: 'nl' } }
+    {bounds:nlBounds, componentRestrictions:{country:'nl'}}
   );
-
-  autocompleteEnd = new google.maps.places.Autocomplete(
+  autoEnd = new google.maps.places.Autocomplete(
     document.getElementById('inputEnd'),
-    { bounds: nlBounds, componentRestrictions: { country: 'nl' } }
+    {bounds:nlBounds, componentRestrictions:{country:'nl'}}
   );
 
-  // GPS locatie ophalen bij opstarten
   locateMe();
 }
 
-// ── GPS LOCATIE ──
+// ════════════════════════════════════════════
+// GPS LOCATIE
+// ════════════════════════════════════════════
 function locateMe() {
-  if (!navigator.geolocation) {
-    showAlert('📍', 'GPS niet beschikbaar', 'Je browser ondersteunt geen GPS.');
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      map.setCenter(latlng);
-      map.setZoom(15);
-
-      // Zet marker op huidige locatie
-      if (userMarker) userMarker.setMap(null);
-      userMarker = new google.maps.Marker({
-        position: latlng,
-        map: map,
-        title: 'Mijn locatie',
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#00c896',
-          fillOpacity: 1,
-          strokeColor: 'white',
-          strokeWeight: 3
-        }
-      });
-
-      // Zet adres in startpunt veld
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: latlng }, (results, status) => {
-        if (status === 'OK' && results[0]) {
-          document.getElementById('inputStart').value = results[0].formatted_address;
-        }
-      });
-    },
-    () => {
-      showAlert('📍', 'Locatie geblokkeerd', 'Geef locatietoegang om automatisch te starten.');
-    }
-  );
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    const ll = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+    mapPlan.setCenter(ll);
+    mapPlan.setZoom(15);
+    if (userMarkerPlan) userMarkerPlan.setMap(null);
+    userMarkerPlan = new google.maps.Marker({
+      position:ll, map:mapPlan, title:'Mijn locatie',
+      icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:'#00c896',fillOpacity:1,strokeColor:'white',strokeWeight:3}
+    });
+    new google.maps.Geocoder().geocode({location:ll}, (res,st) => {
+      if (st==='OK' && res[0]) document.getElementById('inputStart').value = res[0].formatted_address;
+    });
+  }, () => {});
 }
 
-// ── ROUTE BEREKENEN ──
+function gebruikMijnLocatie() {
+  if (!navigator.geolocation) {
+    showAlert('❌','GPS niet beschikbaar','Je browser ondersteunt geen GPS.');
+    return;
+  }
+  // Knop animeren
+  const btn = document.getElementById('locBtn');
+  btn.textContent = '⏳';
+  btn.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    const ll = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+
+    // Marker op kaart
+    mapPlan.setCenter(ll);
+    mapPlan.setZoom(15);
+    if (userMarkerPlan) userMarkerPlan.setMap(null);
+    userMarkerPlan = new google.maps.Marker({
+      position:ll, map:mapPlan, title:'Mijn locatie',
+      icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:'#00c896',fillOpacity:1,strokeColor:'white',strokeWeight:3}
+    });
+
+    // Adres ophalen via geocoder
+    new google.maps.Geocoder().geocode({location:ll}, (res,st) => {
+      btn.textContent = '📍';
+      btn.disabled = false;
+      if (st==='OK' && res[0]) {
+        document.getElementById('inputStart').value = res[0].formatted_address;
+        showAlert('📍','Locatie gevonden',res[0].formatted_address);
+      } else {
+        // Fallback: coördinaten gebruiken
+        document.getElementById('inputStart').value = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
+        showAlert('📍','Locatie gevonden','Coördinaten worden gebruikt als vertrekpunt.');
+      }
+    });
+  }, (err) => {
+    btn.textContent = '📍';
+    btn.disabled = false;
+    if (err.code === 1) {
+      showAlert('🚫','Locatie geblokkeerd','Geef locatietoegang in je browserinstellingen.');
+    } else {
+      showAlert('⚠️','Locatie niet gevonden','Kon je locatie niet bepalen. Probeer opnieuw.');
+    }
+  }, {enableHighAccuracy:true, timeout:10000, maximumAge:0});
+}
+
+// ════════════════════════════════════════════
+// ROUTE BEREKENEN
+// ════════════════════════════════════════════
 function planRoute() {
   const start = document.getElementById('inputStart').value.trim();
   const end = document.getElementById('inputEnd').value.trim();
+  if (!start || !end) { showAlert('⚠️','Velden leeg','Vul vertrekpunt en bestemming in.'); return; }
 
-  if (!start || !end) {
-    showAlert('⚠️', 'Velden leeg', 'Vul zowel vertrekpunt als bestemming in.');
-    return;
-  }
+  const btn = document.getElementById('btnRoute');
+  btn.disabled = true; btn.textContent = '⏳ Berekenen...';
 
-  document.getElementById('btnRoute').disabled = true;
-  document.getElementById('btnRoute').textContent = '⏳ Berekenen...';
-
-  // Gebruik BICYCLING voor bromscooter (fietspad + rijbaan, GEEN snelweg)
   directionsService.route({
-    origin: start,
-    destination: end,
-    travelMode: google.maps.TravelMode.BICYCLING,
-    region: 'nl',
-    provideRouteAlternatives: false,
+    origin:start, destination:end,
+    travelMode:google.maps.TravelMode.BICYCLING,
+    region:'nl'
   }, (result, status) => {
-    document.getElementById('btnRoute').disabled = false;
-    document.getElementById('btnRoute').textContent = '🛵 Route berekenen';
-
+    btn.disabled = false; btn.textContent = '🛵 Route berekenen';
     if (status === 'OK') {
+      routeResultaat = result;
       directionsRenderer.setDirections(result);
       verwerkRoute(result);
     } else {
-      handleRouteError(status);
+      handleFout(status);
     }
   });
 }
 
-// ── ROUTE VERWERKEN ──
+// ════════════════════════════════════════════
+// ROUTE VERWERKEN
+// ════════════════════════════════════════════
 function verwerkRoute(result) {
-  const route = result.routes[0];
-  const leg = route.legs[0];
+  const leg = result.routes[0].legs[0];
+  totaleAfstand = leg.distance.value;
 
-  // Stats
   const distKm = (leg.distance.value / 1000).toFixed(1);
-  // Reistijd berekenen op basis van 45 km/h (bromscooter max snelheid)
-  // Google geeft fietstijd terug (~15 km/h), wij herberekenen op 35 km/h gemiddeld
-  // (rekening houdend met stoplichten, bochten, bebouwde kom)
-  const timeMin = Math.ceil((leg.distance.value / 1000) / 35 * 60);
+  navEtaMinuten = Math.ceil((leg.distance.value / 1000) / 35 * 60);
+
   document.getElementById('statDist').textContent = distKm;
-  document.getElementById('statTime').textContent = timeMin;
+  document.getElementById('statTime').textContent = navEtaMinuten;
   document.getElementById('routeStats').classList.remove('hidden');
 
-  // Aankomsttijd
-  const now = new Date();
-  now.setMinutes(now.getMinutes() + timeMin);
-  document.getElementById('etaTime').textContent =
-    now.getHours().toString().padStart(2,'0') + ':' +
-    now.getMinutes().toString().padStart(2,'0');
+  // Stappen opslaan
+  routeStappen = leg.steps;
+  huidigeStap = 0;
 
-  // Stappen tonen
+  // Stappen renderen
   const list = document.getElementById('stepsList');
   list.innerHTML = '';
-
   leg.steps.forEach((step, i) => {
+    const instr = reinigInstructie(step.instructions);
+    const wt = detecteerWegtype(instr);
     const div = document.createElement('div');
     div.className = 'step';
-    div.style.animationDelay = `${i * 0.04}s`;
-
-    const dist = step.distance.text;
-    const instr = step.instructions.replace(/<[^>]*>/g, '').replace(/Fiets /gi, 'Rijd ').replace(/fiets /gi, 'rijd ').replace(/Fietsen /gi, 'Rijden ').replace(/fietsen /gi, 'rijden ');
-    const icon = getStepIcon(step.maneuver);
-    const straat = step.instructions.replace(/<[^>]*>/g, '');
-    const wegtype = detecteerWegtype(instr, straat);
-
+    div.id = `stap-${i}`;
+    div.style.animationDelay = `${i*.04}s`;
     div.innerHTML = `
-      <div class="step-icon">${icon}</div>
+      <div class="step-icon" id="icon-${i}">${getStepIcon(step.maneuver)}</div>
       <div class="step-content">
-        <div class="step-instruction">${instr}</div>
-        <div class="step-wegtype" style="display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(0,0,0,0.3);border:1px solid ${wegtype.kleur};color:${wegtype.kleur};">
-          ${wegtype.icon} ${wegtype.label}
-        </div>
-        ${wegtype.waarschuwing ? `<div class="step-warning">${wegtype.waarschuwing}</div>` : ''}
+        <div class="step-instr">${instr}</div>
+        <span class="wegtype-badge" style="border:1px solid ${wt.kleur};color:${wt.kleur};">${wt.icon} ${wt.label}</span>
+        ${wt.waarschuwing ? `<div class="step-warn">${wt.waarschuwing}</div>` : ''}
       </div>
-      <div class="step-dist">${dist}</div>
-    `;
+      <div class="step-dist">${step.distance.text}</div>`;
     list.appendChild(div);
   });
 
-  // Eerste stap in nav bar
-  if (leg.steps.length > 0) {
-    const first = leg.steps[0];
-    document.getElementById('turnIcon').textContent = getStepIcon(first.maneuver);
-    document.getElementById('navInstruction').textContent = first.instructions.replace(/<[^>]*>/g, '');
-    document.getElementById('navDetail').textContent = `Richting ${leg.end_address.split(',')[0]}`;
-  }
+  // Start nav knop tonen
+  document.getElementById('btnStartNav').classList.remove('hidden');
 
-  // Road type indicator op basis van eerste stap
-  const eersteWegtype = detecteerWegtype(
-    leg.steps[0].instructions.replace(/<[^>]*>/g, ''),
-    leg.steps[0].instructions.replace(/<[^>]*>/g, '')
-  );
-  document.getElementById('roadTypeBox').style.display = 'block';
-  document.getElementById('roadTypeName').textContent = eersteWegtype.icon + ' ' + eersteWegtype.label;
-  document.getElementById('roadTypeName').style.color = eersteWegtype.kleur;
-  document.getElementById('roadTypeRule').textContent = eersteWegtype.waarschuwing || '✅ Bromfiets toegestaan';
-  document.getElementById('roadTypeRule').style.color = eersteWegtype.waarschuwing ? 'var(--yellow)' : 'var(--green)';
+  // Waarschuwingen
+  if (distKm > 10) showAlert('⚡','Lange route',`${distKm} km — zorg voor voldoende brandstof.`);
 
-  // Waarschuwingen tonen
-  checkRouteWarnings(leg, distKm);
+  checkRouteWarnings(leg);
 }
 
-// ── STAP ICOON ──
+// ════════════════════════════════════════════
+// NAVIGATIE STARTEN
+// ════════════════════════════════════════════
+function startNavigatie() {
+  if (!routeResultaat) return;
+
+  // Wissel naar navigatiescherm
+  document.getElementById('planScherm').style.display = 'none';
+  document.getElementById('navScherm').style.display = 'flex';
+  document.getElementById('navScherm').style.flexDirection = 'column';
+
+  // Route op nav kaart zetten
+  directionsRendererNav.setDirections(routeResultaat);
+
+  // ETA instellen
+  updateEta();
+
+  // Eerste instructie tonen
+  toonStap(0);
+
+  // Scherm wakker houden
+  vraagWakeLock();
+
+  // GPS tracking starten
+  if (navigator.geolocation) {
+    gpsWatcher = navigator.geolocation.watchPosition(
+      onGpsUpdate,
+      onGpsFout,
+      {enableHighAccuracy:true, maximumAge:2000, timeout:10000}
+    );
+  }
+
+  // Eerste instructie uitspreken
+  spreekUit(reinigInstructie(routeStappen[0].instructions));
+  showAlert('🧭','Navigatie gestart','Volg de oranje route. Gesproken instructies zijn ingeschakeld.');
+}
+
+// ════════════════════════════════════════════
+// GPS UPDATE (elke seconde)
+// ════════════════════════════════════════════
+function onGpsUpdate(pos) {
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+  const ll = new google.maps.LatLng(lat, lng);
+
+  // Scooter marker updaten
+  if (userMarkerNav) {
+    userMarkerNav.setPosition(ll);
+  } else {
+    userMarkerNav = new google.maps.Marker({
+      position:ll, map:mapNav, title:'Jouw positie',
+      icon:{
+        path:'M 0,-12 C -4,-12 -8,-8 -8,-4 L -8,4 C -8,8 -4,12 0,12 C 4,12 8,8 8,4 L 8,-4 C 8,-8 4,-12 0,-12 Z',
+        fillColor:'#ff6a00', fillOpacity:1,
+        strokeColor:'white', strokeWeight:2,
+        scale:1.2
+      },
+      zIndex:10
+    });
+  }
+
+  // Kaart meebewegen en heading
+  const heading = pos.coords.heading || 0;
+  mapNav.panTo(ll);
+  if (pos.coords.heading) mapNav.setHeading(heading);
+
+  // Afstand tot volgende stap berekenen
+  if (routeStappen.length > huidigeStap) {
+    const stap = routeStappen[huidigeStap];
+    const eindPunt = stap.end_location;
+    const afstandTotStap = google.maps.geometry.spherical.computeDistanceBetween(ll, eindPunt);
+
+    // Update afstand in nav top
+    document.getElementById('navTopDist').innerHTML =
+      afstandTotStap < 1000
+        ? `${Math.round(afstandTotStap)}<small>meter</small>`
+        : `${(afstandTotStap/1000).toFixed(1)}<small>km</small>`;
+
+    // Automatisch volgende stap bij nadering (binnen 25 meter)
+    if (afstandTotStap < 25 && huidigeStap < routeStappen.length - 1) {
+      huidigeStap++;
+      toonStap(huidigeStap);
+
+      const nieuweInstr = reinigInstructie(routeStappen[huidigeStap].instructions);
+      spreekUit(nieuweInstr);
+
+      // Aankondiging 200m van tevoren voor volgende stap
+      if (huidigeStap < routeStappen.length - 1) {
+        const volgendeStap = routeStappen[huidigeStap + 1];
+        const afstandVolgende = google.maps.geometry.spherical.computeDistanceBetween(
+          routeStappen[huidigeStap].start_location, volgendeStap.end_location
+        );
+        if (afstandVolgende < 300) {
+          setTimeout(() => {
+            spreekUit('Daarna: ' + reinigInstructie(volgendeStap.instructions));
+          }, 5000);
+        }
+      }
+    }
+
+    // Aankondiging 200 meter van tevoren
+    if (afstandTotStap < 200 && afstandTotStap > 150 && huidigeStap < routeStappen.length - 1) {
+      spreekUit('Over 200 meter: ' + reinigInstructie(routeStappen[huidigeStap].instructions));
+    }
+
+    // Aankomsdetectie
+    if (huidigeStap === routeStappen.length - 1 && afstandTotStap < 30) {
+      spreekUit('U bent aangekomen op uw bestemming!');
+      showAlert('🏁','Aankomst!','U bent aangekomen op uw bestemming.');
+      stopNavigatie();
+      return;
+    }
+  }
+
+  // Resterende afstand bijhouden
+  if (vorigePos) {
+    const stapAfstand = google.maps.geometry.spherical.computeDistanceBetween(
+      new google.maps.LatLng(vorigePos.lat, vorigePos.lng), ll
+    );
+    afgelegdeAfstand += stapAfstand;
+    const resterend = Math.max(0, totaleAfstand - afgelegdeAfstand);
+    document.getElementById('navKmLeft').textContent = `${(resterend/1000).toFixed(1)} km resterend`;
+
+    // Herbereken ETA
+    const minResterend = Math.ceil((resterend/1000) / 35 * 60);
+    const nu = new Date();
+    nu.setMinutes(nu.getMinutes() + minResterend);
+    document.getElementById('navEtaTime').textContent =
+      nu.getHours().toString().padStart(2,'0') + ':' + nu.getMinutes().toString().padStart(2,'0');
+  }
+  vorigePos = {lat, lng};
+}
+
+function onGpsFout(err) {
+  console.warn('GPS fout:', err.message);
+}
+
+// ════════════════════════════════════════════
+// STAP TONEN
+// ════════════════════════════════════════════
+function toonStap(index) {
+  if (index >= routeStappen.length) return;
+  const stap = routeStappen[index];
+  const instr = reinigInstructie(stap.instructions);
+  const wt = detecteerWegtype(instr);
+
+  document.getElementById('navTurnIcon').textContent = getStepIcon(stap.maneuver);
+  document.getElementById('navTopInstr').textContent = instr;
+  document.getElementById('navTopDetail').innerHTML =
+    `<span style="color:${wt.kleur}">${wt.icon} ${wt.label}</span>` +
+    (wt.waarschuwing ? ` — <span style="color:var(--yellow)">${wt.waarschuwing}</span>` : '');
+
+  // Volgende stap preview
+  if (index + 1 < routeStappen.length) {
+    const volgend = routeStappen[index + 1];
+    document.getElementById('nsIcon').textContent = getStepIcon(volgend.maneuver);
+    document.getElementById('nsText').textContent = reinigInstructie(volgend.instructions).substring(0, 30) + '...';
+    document.getElementById('nextStepBox').classList.remove('hidden');
+  } else {
+    document.getElementById('nextStepBox').classList.add('hidden');
+  }
+
+  // Actieve stap markeren in lijst (als planscherm nog zichtbaar was)
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active-step'));
+  document.querySelectorAll('.step-icon').forEach(el => el.classList.remove('active'));
+  const actief = document.getElementById(`stap-${index}`);
+  const actiefIcon = document.getElementById(`icon-${index}`);
+  if (actief) { actief.classList.add('active-step'); actief.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  if (actiefIcon) actiefIcon.classList.add('active');
+
+  // ETA updaten
+  updateEta();
+}
+
+// ════════════════════════════════════════════
+// ETA UPDATEN
+// ════════════════════════════════════════════
+function updateEta() {
+  const nu = new Date();
+  nu.setMinutes(nu.getMinutes() + navEtaMinuten);
+  document.getElementById('navEtaTime').textContent =
+    nu.getHours().toString().padStart(2,'0') + ':' + nu.getMinutes().toString().padStart(2,'0');
+  document.getElementById('navKmLeft').textContent = `${(totaleAfstand/1000).toFixed(1)} km resterend`;
+}
+
+// ════════════════════════════════════════════
+// GESPROKEN INSTRUCTIES
+// ════════════════════════════════════════════
+function spreekUit(tekst) {
+  if (!geluidsAan) return;
+  if (!('speechSynthesis' in window)) return;
+
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(tekst);
+  utt.lang = 'nl-NL';
+  utt.rate = 0.95;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+
+  // Probeer Nederlandse stem te vinden
+  const stemmen = window.speechSynthesis.getVoices();
+  const nlStem = stemmen.find(v => v.lang.startsWith('nl')) || null;
+  if (nlStem) utt.voice = nlStem;
+
+  window.speechSynthesis.speak(utt);
+}
+
+function toggleMute() {
+  geluidsAan = !geluidsAan;
+  document.getElementById('muteBtn').textContent = geluidsAan ? '🔊 Geluid' : '🔇 Gedempt';
+  if (!geluidsAan) window.speechSynthesis.cancel();
+  else spreekUit('Geluid ingeschakeld');
+}
+
+// ════════════════════════════════════════════
+// WAKE LOCK (scherm aan houden)
+// ════════════════════════════════════════════
+async function vraagWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch(e) { console.log('WakeLock niet beschikbaar:', e); }
+}
+
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    vraagWakeLock();
+  }
+});
+
+// ════════════════════════════════════════════
+// NAVIGATIE STOPPEN
+// ════════════════════════════════════════════
+function stopNavigatie() {
+  if (gpsWatcher !== null) {
+    navigator.geolocation.clearWatch(gpsWatcher);
+    gpsWatcher = null;
+  }
+  if (wakeLock) { wakeLock.release(); wakeLock = null; }
+  window.speechSynthesis.cancel();
+
+  document.getElementById('navScherm').style.display = 'none';
+  document.getElementById('planScherm').style.display = 'flex';
+
+  vorigePos = null;
+  afgelegdeAfstand = 0;
+}
+
+// ════════════════════════════════════════════
+// WEGTYPE DETECTIE
+// ════════════════════════════════════════════
+function detecteerWegtype(instructie) {
+  const i = instructie.toLowerCase();
+  if (/\ba\d+\b|autosnelweg|snelweg|motorway/.test(i))
+    return {type:'snelweg',label:'Autosnelweg',icon:'🚫',kleur:'var(--red)',waarschuwing:'Bromscooters VERBODEN — neem alternatieve route'};
+  if (/\bn\d{2,3}\b|provinciale|rondweg|randweg|ringweg/.test(i))
+    return {type:'nweg',label:'N-weg',icon:'⚠️',kleur:'var(--yellow)',waarschuwing:'Rijbaan verplicht — max 45 km/h'};
+  if (/\blaan\b|boulevard|buitenweg|industrieweg/.test(i))
+    return {type:'rijbaan',label:'Rijbaan',icon:'🚗',kleur:'var(--blue)',waarschuwing:'Let op autoverkeer'};
+  if (/fietspad|fietsstraat|fietsdijk|kanaaldijk/.test(i))
+    return {type:'fietspad',label:'Fietspad',icon:'🚲',kleur:'var(--green)',waarschuwing:null};
+  if (/straat|steeg|plein|dreef|singel|gracht|kade/.test(i))
+    return {type:'woonstraat',label:'Woonstraat',icon:'🏘️',kleur:'var(--green)',waarschuwing:null};
+  return {type:'weg',label:'Weg',icon:'🛣️',kleur:'var(--text-dim)',waarschuwing:null};
+}
+
+// ════════════════════════════════════════════
+// HULPFUNCTIES
+// ════════════════════════════════════════════
+function reinigInstructie(html) {
+  return html.replace(/<[^>]*>/g,'')
+    .replace(/Fiets /gi,'Rijd ').replace(/fiets /gi,'rijd ')
+    .replace(/Fietsen /gi,'Rijden ').replace(/fietsen /gi,'rijden ');
+}
+
 function getStepIcon(maneuver) {
-  const icons = {
-    'turn-left': '↰', 'turn-right': '↱', 'turn-slight-left': '↖️',
-    'turn-slight-right': '↗️', 'turn-sharp-left': '⬅️', 'turn-sharp-right': '➡️',
-    'roundabout-left': '🔄', 'roundabout-right': '🔄',
-    'uturn-left': '↩️', 'uturn-right': '↪️',
-    'straight': '⬆️', 'ramp-left': '↰', 'ramp-right': '↱',
-    'merge': '⬆️', 'fork-left': '↰', 'fork-right': '↱',
-    'ferry': '⛴️', 'ferry-train': '🚂',
+  const m = {
+    'turn-left':'↰','turn-right':'↱','turn-slight-left':'↖️','turn-slight-right':'↗️',
+    'turn-sharp-left':'⬅️','turn-sharp-right':'➡️','roundabout-left':'🔄','roundabout-right':'🔄',
+    'uturn-left':'↩️','uturn-right':'↪️','straight':'⬆️','merge':'⬆️',
+    'ramp-left':'↰','ramp-right':'↱','fork-left':'↰','fork-right':'↱',
+    'ferry':'⛴️','ferry-train':'🚂'
   };
-  return icons[maneuver] || '⬆️';
+  return m[maneuver] || '⬆️';
 }
 
-// ── WEGTYPE DETECTIE ──
-function detecteerWegtype(instructie, straatnaam) {
-  const i = (instructie + ' ' + (straatnaam || '')).toLowerCase();
-  if (/\ba\d+\b|autosnelweg|snelweg|motorway/.test(i)) {
-    return { type:'snelweg', label:'Autosnelweg', icon:'🚫', kleur:'var(--red)', waarschuwing:'🚫 Autosnelweg — bromscooters VERBODEN! Neem alternatieve route.' };
-  }
-  if (/\bn\d{3}\b|\bn\d{2}\b|provinciale weg|rondweg|randweg|ringweg/.test(i)) {
-    return { type:'nweg', label:'N-weg', icon:'⚠️', kleur:'var(--yellow)', waarschuwing:'⚠️ N-weg: rijbaan verplicht — max 45 km/h aanhouden' };
-  }
-  if (/\blaan\b|boulevard|buitenweg|industrieweg|havenweg/.test(i)) {
-    return { type:'rijbaan', label:'Rijbaan', icon:'🚗', kleur:'var(--blue)', waarschuwing:'⚠️ Rijbaan: let op autoverkeer' };
-  }
-  if (/fietspad|fietsstraat|fietsdijk|kanaaldijk|pad\b|dijk\b/.test(i)) {
-    return { type:'fietspad', label:'Fietspad', icon:'🚲', kleur:'var(--green)', waarschuwing:null };
-  }
-  if (/straat|steeg|plein|dreef|singel|gracht|kade/.test(i)) {
-    return { type:'woonstraat', label:'Woonstraat', icon:'🏘️', kleur:'var(--green)', waarschuwing:null };
-  }
-  return { type:'weg', label:'Weg', icon:'🛣️', kleur:'var(--text-dim)', waarschuwing:null };
-}
-
-// ── ROUTE WAARSCHUWINGEN ──
-function checkRouteWarnings(leg, distKm) {
-  const warnings = [];
-
-  if (distKm > 10) {
-    warnings.push({ icon: '⚡', title: 'Lange route', msg: `${distKm} km — zorg voor voldoende brandstof en houd 45 km/h aan.` });
-  }
-
-  // Check alle stappen op snelwegen
-  leg.steps.forEach(step => {
-    const instr = step.instructions.replace(/<[^>]*>/g, '');
-    const wt = detecteerWegtype(instr, instr);
-    if (wt.type === 'snelweg') {
-      warnings.unshift({ icon: '🚫', title: 'Snelweg gedetecteerd!', msg: 'De route bevat mogelijk een snelweg. Bromscooters zijn verboden op snelwegen — controleer de route.' });
+function checkRouteWarnings(leg) {
+  leg.steps.forEach(s => {
+    const instr = reinigInstructie(s.instructions);
+    if (detecteerWegtype(instr).type === 'snelweg') {
+      showAlert('🚫','Snelweg gedetecteerd!','De route bevat mogelijk een snelweg. Bromscooters verboden — controleer de route.');
     }
   });
-  warnings.push({ icon: '🪖', title: 'Helm verplicht', msg: 'Vergeet je helm niet — verplicht voor bestuurder en passagier.' });
-
-  if (warnings.length > 0) {
-    let i = 0;
-    function toonVolgende() {
-      if (i >= warnings.length) return;
-      const w = warnings[i++];
-      showAlert(w.icon, w.title, w.msg);
-      if (i < warnings.length) setTimeout(toonVolgende, 4500);
-    }
-    setTimeout(toonVolgende, 800);
-  }
 }
 
-// ── FOUTAFHANDELING ──
-function handleRouteError(status) {
+function handleFout(status) {
   const msgs = {
-    'NOT_FOUND': 'Adres niet gevonden. Controleer de spelling.',
-    'ZERO_RESULTS': 'Geen route gevonden tussen deze twee punten.',
-    'MAX_WAYPOINTS_EXCEEDED': 'Te veel tussenpunten.',
-    'INVALID_REQUEST': 'Ongeldige aanvraag. Controleer de adressen.',
-    'OVER_QUERY_LIMIT': 'Te veel verzoeken. Probeer het later opnieuw.',
-    'REQUEST_DENIED': 'API-sleutel ongeldig of niet geconfigureerd.',
-    'UNKNOWN_ERROR': 'Onbekende fout. Probeer opnieuw.',
+    'NOT_FOUND':'Adres niet gevonden.',
+    'ZERO_RESULTS':'Geen route gevonden.',
+    'REQUEST_DENIED':'API-sleutel ongeldig.',
+    'OVER_QUERY_LIMIT':'Te veel verzoeken, probeer later opnieuw.',
   };
-  showAlert('❌', 'Route mislukt', msgs[status] || `Fout: ${status}`);
+  showAlert('❌','Route mislukt', msgs[status] || `Fout: ${status}`);
 }
 
-// ── ALERTS ──
 let alertTimer = null;
 function showAlert(icon, title, msg) {
   if (alertTimer) clearTimeout(alertTimer);
@@ -540,20 +821,14 @@ function showAlert(icon, title, msg) {
   document.getElementById('alertTitle').textContent = title;
   document.getElementById('alertMsg').textContent = msg;
   document.getElementById('alertBanner').classList.remove('hidden');
-  alertTimer = setTimeout(closeAlert, 5500);
+  alertTimer = setTimeout(closeAlert, 6000);
 }
-function closeAlert() {
-  document.getElementById('alertBanner').classList.add('hidden');
-}
-
-// ── MODALS ──
+function closeAlert() { document.getElementById('alertBanner').classList.add('hidden'); }
 function showRules() { document.getElementById('rulesModal').classList.remove('hidden'); }
 function closeRules() { document.getElementById('rulesModal').classList.add('hidden'); }
 
-// ── ENTER TOETS ──
-document.getElementById('inputEnd').addEventListener('keydown', e => {
-  if (e.key === 'Enter') planRoute();
-});
+// Enter om te zoeken
+document.getElementById('inputEnd').addEventListener('keydown', e => { if(e.key==='Enter') planRoute(); });
 </script>
 </body>
 </html>
